@@ -116,9 +116,7 @@ awful.screen.connect_for_each_screen(function(s)
                 layout = {
                         spacing_widget = {
                                 {
-                                        forced_width = 5,
-                                        forced_height = 24,
-                                        thickness = 1,
+                                        forced_height = 10,
                                         color = "white",
                                         widget = wibox.widget.separator
                                 },
@@ -126,14 +124,13 @@ awful.screen.connect_for_each_screen(function(s)
                                 halign = "center",
                                 widget = wibox.container.place
                         },
-                        spacing = 1,
+                        spacing = 5,
                         layout = wibox.layout.fixed.horizontal
                 },
                 widget_template = {
                         nil,
                         {
                                 wibox.widget.base.make_widget(),
-                                forced_height = 24,
                                 id = "background_role",
                                 widget = wibox.container.background,
                         },
@@ -156,9 +153,18 @@ awful.screen.connect_for_each_screen(function(s)
         s.taskbar = awful.wibar({position = "bottom", screen = s})
         s.taskbar:setup {
                 layout = wibox.layout.align.horizontal,
+                expand = 'outside',
                 s.prompt_widget,
                 s.task_list_widget,
-                clock_widget
+                {
+                        {
+                                clock_widget,
+                                spacing = 5,
+                                layout = wibox.layout.fixed.horizontal
+                        },
+                        widget = wibox.container.place,
+                        halign = "right"
+                }
         }
 
 end)
@@ -173,7 +179,9 @@ client_keys = gears.table.join(
         ),
         awful.key({modkey}, "n", function(c)
                 c.minimized = true
-        end, {description = "Minimize", group="client"})
+        end, {description = "Minimize", group="client"}),
+        awful.key({}, "F11", function(c) c.fullscreen = not c.fullscreen end,
+                 { description="Fullscreen", group="client" })
 )
 globalbinds = gears.table.join(
         awful.key({ modkey,           }, "s",      hotkeys_popup.show_help,
