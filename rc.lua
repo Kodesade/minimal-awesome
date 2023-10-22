@@ -39,7 +39,7 @@ end
 ---------------------------------
 ------------ THEMES -------------
 ---------------------------------
-beautiful.init(gears.filesystem.get_configuration_dir() .. "mytheme.lua")
+beautiful.init(gears.filesystem.get_configuration_dir() .. "theme.lua")
 beautiful.useless_gap = 5
 
 ---------------------------------
@@ -180,6 +180,9 @@ client_keys = gears.table.join(
         awful.key({modkey}, "n", function(c)
                 c.minimized = true
         end, {description = "Minimize", group="client"}),
+        awful.key({modkey}, "space", function(c)
+                c.floating = not c.floating
+        end, {description = "Floating", group="client"}),
         awful.key({}, "F11", function(c) c.fullscreen = not c.fullscreen end,
                  { description="Fullscreen", group="client" })
 )
@@ -198,7 +201,15 @@ globalbinds = gears.table.join(
         ),
         awful.key({modkey}, "r", function()
                 awful.screen.focused().prompt_widget:run()
-        end, {description="Run prompt",group="launcher"})
+        end, {description="Run prompt",group="launcher"}),
+        awful.key({modkey}, "4", function()
+                awful.spawn.easy_async('pactl set-sink-volume @DEFAULT_SINK@ -1%',function() end)
+        end,
+                { description="Decrease volume", group="PulseAudio" }),
+        awful.key({modkey}, "5", function()
+                awful.spawn.easy_async('pactl set-sink-volume @DEFAULT_SINK@ +1%',function() end)
+        end,
+                { description="Increase volume", group="PulseAudio" })
 )
 
 root.keys(globalbinds)
