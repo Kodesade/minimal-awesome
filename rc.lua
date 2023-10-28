@@ -9,6 +9,7 @@ local beautiful = require("beautiful")
 local naughty = require("naughty")
 local menubar = require("menubar")
 local hotkeys_popup = require("awful.hotkeys_popup")
+local cairo = require("lgi").cairo
 
 require("awful.hotkeys_popup.keys")
 
@@ -247,6 +248,16 @@ client.connect_signal("manage", function (c)
       and not c.size_hints.program_position then
         -- Prevent clients from being unreachable after screen count changes.
         awful.placement.no_offscreen(c)
+    end
+    
+    local default_icon = gears.filesystem.get_configuration_dir() .. "icons/empty.svg"
+    if c and c.valid and not c.icon then
+        local s = gears.surface(default_icon)
+        local img = cairo.ImageSurface.create(cairo.Format.ARGB32, s:get_width(), s:get_height())
+        local cr = cairo.Context(img)
+        cr:set_source_surface(s,0,0)
+        cr:paint()
+        c.icon = img._native
     end
 end)
 
